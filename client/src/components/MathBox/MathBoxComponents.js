@@ -949,7 +949,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   // The next two handlers all perform validation, then delegate to updateExpr
   // Handlers are structured this way because range properties can be functions.
   handleRange = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { rangeU, rangeV, expr } = handledProps
+    const { rangeU, rangeV, expr, labelW } = handledProps
     const { dataNodes: area } = nodes
 
     const isExprValid = this.constructor.isExprValid(expr)
@@ -966,7 +966,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     if (!isExprValid) { return }
 
     const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
-    const transformedExpr = this.constructor.transformExpr(expr)
+    const transformedExpr = this.constructor.transformExpr(expr, labelW)
     ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr)
 
     if (!this.canUpdateColorExpr(handledProps)) { return }
@@ -1008,7 +1008,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
   }
 
   handleExpr = (nodes: HandlerNodes, handledProps: HandledProps) => {
-    const { expr, rangeU, rangeV } = handledProps
+    const { expr, rangeU, rangeV, labelW } = handledProps
     this.constructor.validateExpr(expr)
     const { dataNodes: area } = nodes
 
@@ -1018,7 +1018,7 @@ export class ParametricSurface extends AbstractMBC implements MathBoxComponent {
     if (!isRangeValid) { return }
 
     const trueParamsFunc = ParametricSurface.getTrueParamsFunc(rangeU, rangeV)
-    const transformedExpr = this.constructor.transformExpr(expr)
+    const transformedExpr = this.constructor.transformExpr(expr, labelW)
     ParametricSurface.updateExpr(area, trueParamsFunc, transformedExpr)
     if (!this.canUpdateColorExpr(handledProps)) { return }
     ParametricSurface.updateColorExpr(nodes, handledProps, trueParamsFunc, transformedExpr)
@@ -1151,8 +1151,10 @@ export class ExplicitSurface extends ParametricSurface implements MathBoxCompone
   static validateExpr(expr: mixed) {
     validateFunctionSignature(expr, 2, 1)
   }
-  static transformExpr(expr: mixed): (number, number) => [number, number, number] {
+  static transformExpr(expr: mixed, labelW: string): (number, number) => [number, number, number] {
     // $FlowFixMe previous line will throw if invalid type
+    if (labelW === 'x') return (u, v) => [expr(u, v), u, v]
+    if (labelW === 'y') return (u, v) => [u, expr(u, v), v]
     return (u, v) => [u, v, expr(u, v)]
   }
 

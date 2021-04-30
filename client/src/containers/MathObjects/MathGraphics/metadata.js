@@ -274,7 +274,18 @@ function makeParametricSamplesAndGrid(labelU: string, labelV: string) {
   }
 }
 
-const parametricSurfacaSpecific: MetaData = {
+const parametricSurfaceSpecific: MetaData = {
+  ...makeParametricSamplesAndGrid('u', 'v'),
+  labelU: {
+    inputType: 'text',
+    defaultValue: 'u',
+    isPrimary: true
+  },
+  labelV: {
+    inputType: 'text',
+    defaultValue: 'v',
+    isPrimary: true
+  },
   expr: {
     inputType: 'math',
     defaultValue: '_f(u,v)=\\left[v\\cdot\\cos\\left(u\\right),v\\cdot\\sin\\left(u\\right),v\\right]',
@@ -302,21 +313,35 @@ const parametricSurfacaSpecific: MetaData = {
   gridWidth: {
     inputType: 'math',
     defaultValue: '2'
-  },
-  ...makeParametricSamplesAndGrid('u', 'v')
+  }
 }
 
-export const parametricSurfacaMeta: MetaData = {
+export const parametricSurfaceMeta: MetaData = {
   ...universal,
   ...surfaceLike,
-  ...parametricSurfacaSpecific
+  ...parametricSurfaceSpecific
 }
 
 // ---------- Explicit Surface (Rectangular) ---------- //
 
 export const explicitSurfaceMeta: MetaData = {
-  ...parametricSurfacaMeta,
+  ...parametricSurfaceMeta,
   ...makeParametricSamplesAndGrid('x', 'y'),
+  labelU: {
+    inputType: 'text',
+    defaultValue: 'x',
+    isPrimary: true
+  },
+  labelV: {
+    inputType: 'text',
+    defaultValue: 'y',
+    isPrimary: true
+  },
+  labelW: {
+    inputType: 'text',
+    defaultValue: 'z',
+    isPrimary: true
+  },
   expr: {
     inputType: 'math',
     defaultValue: '_f(x,y)=x^2-y^2',
@@ -342,8 +367,18 @@ export const explicitSurfaceMeta: MetaData = {
 // ---------- ExplicitSurface Polar ---------- //
 
 export const explicitSurfacePolarMeta: MetaData = {
-  ...parametricSurfacaMeta,
+  ...parametricSurfaceMeta,
   ...makeParametricSamplesAndGrid('r', '\u03B8'), // \u03B8 is lowercase theta
+  labelU: {
+    inputType: 'text',
+    defaultValue: 'r',
+    isPrimary: true
+  },
+  labelV: {
+    inputType: 'text',
+    defaultValue: '\\theta',
+    isPrimary: true
+  },
   expr: {
     inputType: 'math',
     defaultValue: '_f(r,\\theta)=\\frac{1}{4}r^2\\cdot\\cos\\left(3\\theta\\right)',

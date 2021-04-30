@@ -182,7 +182,7 @@ export class StaticMath extends PureComponent<StaticMathProps> {
 
   componentDidUpdate() {
     if (this.props.latex !== this.staticMath.latex()) {
-      this.staticMath.latex(this.props.latex)
+      this.componentDidMount()
     }
   }
 
